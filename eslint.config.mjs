@@ -1,7 +1,8 @@
 import reactHooks from "eslint-plugin-react-hooks";
+import { computeFromManifest } from "next/dist/build/utils";
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals"),
+  ...computeFromManifest.extends("next/core-web-vitals"),
   {
     ignores: [
       "node_modules/**",
