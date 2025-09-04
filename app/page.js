@@ -1,43 +1,50 @@
-"use client";
+import fs from "fs";
 import path from "path";
 import Link from "next/link";
-import { Folder } from "lucide-react"; // pretty folder icon
-import { fstat } from "fs";
+
+const gradients = [
+  "from-pink-500 via-red-500 to-yellow-500",
+  "from-indigo-500 via-purple-500 to-pink-500",
+  "from-green-400 via-blue-500 to-purple-600",
+  "from-yellow-400 via-orange-500 to-red-500",
+  "from-blue-400 via-teal-500 to-green-500",
+  "from-purple-500 via-pink-500 to-red-500",
+];
 
 export default function Home() {
   const appDir = path.join(process.cwd(), "app");
 
-  const subDirs = fstat
-    .readdirSync(appDir, { withFileTypes: true })
-    .filter((dirent) => dirent.isDirectory())
-    .map((dirent) => dirent.name)
-    .filter((name) => !name.startsWith("(") && !name.startsWith("_"));
+  // Read only folders
+  const folders = fs
+    .readdirSync(appDir)
+    .filter(
+      (file) =>
+        fs.statSync(path.join(appDir, file)).isDirectory() &&
+        !["api", "_components", "_lib"].includes(file)
+    );
 
   return (
-    <div className="w-full md:w-[50%] mx-auto p-6 bg-gradient-to-br from-zinc-900 via-zinc-800 to-zinc-900 rounded-2xl shadow-2xl border border-zinc-700 mt-4">
-      <h1 className="text-3xl font-extrabold text-white mb-6 flex items-center gap-2">
-        🚀 Projects
+    <main className="min-h-screen bg-gray-100 flex flex-col items-center py-12 px-6">
+      <h1 className="text-4xl font-extrabold mb-10 text-gray-800">
+        Project List
       </h1>
 
-      <div className="grid gap-4">
-        {subDirs.map((dir, index) => (
+      <div className="grid gap-8 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 w-full max-w-6xl">
+        {folders.map((folder, index) => (
           <Link
-            key={dir}
-            href={`/${dir}`}
-            className="group flex items-center justify-between p-4 rounded-xl bg-zinc-800/50 border border-zinc-700 hover:bg-sky-900/30 hover:border-sky-500 transition-all duration-300"
+            key={folder}
+            href={`/${folder}`}
+            className={`group block p-8 rounded-2xl shadow-lg transform transition duration-300 hover:scale-105 hover:shadow-2xl text-white bg-gradient-to-r ${
+              gradients[index % gradients.length]
+            }`}
           >
-            <div className="flex items-center gap-3">
-              <Folder className="text-sky-400 group-hover:scale-110 transition-transform" />
-              <span className="text-lg font-medium text-white group-hover:text-sky-300">
-                {index + 1}. {dir}
-              </span>
-            </div>
-            <span className="text-sm text-zinc-400 group-hover:text-sky-400">
-              View →
-            </span>
+            <h2 className="text-2xl font-bold capitalize">{folder}</h2>
+            <p className="opacity-90 mt-2 text-sm">
+              Explore the <span className="font-mono">{folder}</span> project.
+            </p>
           </Link>
         ))}
       </div>
-    </div>
+    </main>
   );
 }
