@@ -20,6 +20,14 @@ const eslintConfig = [
       "next-env.d.ts",
     ],
   },
+  {
+    plugins: ["react-hooks"],
+    // ...
+    rules: {
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn", // <--- THIS IS THE NEW RULE
+    },
+  },
 ];
 
 export default eslintConfig;
