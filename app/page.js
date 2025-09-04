@@ -2,11 +2,12 @@
 import path from "path";
 import Link from "next/link";
 import { Folder } from "lucide-react"; // pretty folder icon
+import { fstat } from "fs";
 
 export default function Home() {
   const appDir = path.join(process.cwd(), "app");
 
-  const subDirs = fs
+  const subDirs = fstat
     .readdirSync(appDir, { withFileTypes: true })
     .filter((dirent) => dirent.isDirectory())
     .map((dirent) => dirent.name)
