@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 
 const GradientHeader = () => {
-  const [count, setCount] = useState(12);
+  const [count, setCount] = useState(20);
   const [type, setType] = useState("Linear");
   const [gradient, setGradient] = useState([]);
 
@@ -25,14 +25,30 @@ const GradientHeader = () => {
   const gradientGenerate = () => {
     setGradient([]);
     for (let i = 0; i < count; i++) {
-      const color1 = hexCodeGenerate();
-      const color2 = hexCodeGenerate();
-      const deg = Math.floor(Math.random() * 360);
       if (type === "Linear") {
+        const color1 = hexCodeGenerate();
+        const color2 = hexCodeGenerate();
+        const deg = Math.floor(Math.random() * 360);
         const gradientItem = `linear-gradient(${deg}deg, ${color1}, ${color2})`;
         setGradient((prev) => [...prev, gradientItem]);
       } else if (type === "Radial") {
+        const color1 = hexCodeGenerate();
+        const color2 = hexCodeGenerate();
         const gradientItem = `radial-gradient(circle, ${color1}, ${color2})`;
+        setGradient((prev) => [...prev, gradientItem]);
+      } else if (type === "Conic") {
+        const slices = [];
+        let lastPercent = 0;
+        const sliceCount = Math.floor(Math.random() * 4) + 3; // 3–6 slices
+        for (let j = 0; j < sliceCount; j++) {
+          const color = hexCodeGenerate();
+          const percent = lastPercent + Math.floor(Math.random() * 25) + 10; // random slice width
+          lastPercent = percent > 100 ? 100 : percent;
+          slices.push(`${color} ${lastPercent}%`);
+        }
+        const gradientItem = `conic-gradient(from ${Math.floor(
+          Math.random() * 360
+        )}deg, ${slices.join(", ")})`;
         setGradient((prev) => [...prev, gradientItem]);
       }
     }
@@ -69,6 +85,7 @@ const GradientHeader = () => {
           >
             <option>Linear</option>
             <option>Radial</option>
+            <option>Conic</option>
           </select>
 
           <button
